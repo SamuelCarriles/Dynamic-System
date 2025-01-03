@@ -28,7 +28,8 @@ void SistemaDinamico::crear_matriz(double* fila,int index,string matriz){
             matriz_ampliada[index][i]=fila[i];
         } 
     } else cout<<"\nERROR_202!\n";
-} // M.Priv Completado!!
+} // M.Priv Completado!! 
+// Recibe el arreglo de la fila, la fila que es y a qué matriz pertenece.
 double* SistemaDinamico::extraer_coeficientes(string* cadena){
     //falta escribir este método
 }

@@ -44,43 +44,58 @@ void SistemaDinamico::receptor_variables() {
     cout<<"\nIntroduzca las variables que se utilizarán: \n";
     for(int i=0;i<cant_icognitas;i++){
         do {
-            error=false;
-            cout<<"\nVariable "<<i+1<<" => ";
-            cin>>var[i];
-            cin.clear();
-            cin.ignore(1000, '\n');
-            if(cin.fail()||!((var[i]>='a'&&var[i]<='z')||(var[i]>='A'&&var[i]<='Z'))){
-                cout<<"\nERROR_101! Variable no válida. Vuelva a intentarlo . . .\n";
+            try {
+                error=false;
+                cout<<"\nVariable "<<i+1<<" => ";
+                cin>>var[i];
+                cin.clear();
+                cin.ignore(1000, '\n');
+                if(cin.fail()||!((var[i]>='a'&&var[i]<='z')||(var[i]>='A'&&var[i]<='Z'))){
+                    throw 101; 
+                } else if(i>0){
+                    for(int j=0;j<i;j++){
+                        if(var[i]==var[j]){
+                            throw 102;
+                            break;
+                        }
+                    }
+                }
+            } catch(int x){
                 var[i]='\0';
                 error=true;
-            } else if(i>0&&var[i]==var[i-1]){
-                    cout<<"\nERROR_102! Variable repetida. Vuelva a intentarlo . . .\n";
-                    var[i]='\0';
-                    error=true;
+                cout<<"ERROR_"<<x<<"!\n Presione ENTER para volver a intentarlo . . .";
+                cin.clear();
+                cin.get();
             }
         } while (error==true);
     }
     do {
-        error=false;
-        cout<<"\n¿Desea utilizar estas variables? [";
-        for(int i=0;i<cant_icognitas;i++){
-            cout<<var[i]<<" ";
-        }
-        cout<<"] (s/n)\n=> ";
         char sn;
-        cin>>sn;
-        cin.ignore(1000,'\n');
-        if(cin.fail()||(!(sn=='s'||sn=='S'||sn=='n'||sn=='N'))){
-            cout<<"\nERROR_101! Respuesta no válida. Vuelva a intentarlo . . .";
+        try {
+            error=false;
+            cout<<"\n¿Desea utilizar estas variables? [";
+            for(int i=0;i<cant_icognitas;i++){
+                cout<<var[i]<<" ";
+            }
+            cout<<"] (s/n)\n=> ";
+            cin>>sn;
+            cin.ignore(1000,'\n');
+            if(cin.fail()||(!(sn=='s'||sn=='S'||sn=='n'||sn=='N'))){
+                throw 101;
+            } else if(sn=='S'||sn=='s'){
+                cout<<"\n¡Perfecto! Presione ENTER para continuar . . .";
+                cin.get();
+                system("cls");
+            } else if(sn=='n'||sn=='N'){
+                cout<<"\nVale. Intente otra vez, por favor . . .\n";
+                receptor_variables();
+            }
+        } catch(int x){
             sn='\0';
             error=true;
-        } else if(sn=='S'||sn=='s'){
-            cout<<"\n¡Perfecto! Presione ENTER para continuar . . .";
+            cout<<"ERROR_"<<x<<"!\n Presione ENTER para volver a intentarlo . . .";
+            cin.clear();
             cin.get();
-            system("cls");
-        } else if(sn=='n'||sn=='N'){
-            cout<<"\nVale. Intente otra vez, por favor . . .\n";
-            receptor_variables();
         }
     } while (error==true);
     for(int i=0;i<cant_icognitas;i++){

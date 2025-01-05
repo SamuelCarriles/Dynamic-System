@@ -15,6 +15,8 @@ class SistemaDinamico
     // Métodos privados
     void crear_matriz(double* fila,int index,string matriz);
     double* extraer_coeficientes(string* cadena);
+    bool validador_de_ecuaciones(const string& cadena);
+    string patron_validacion();
 
     public:
     SistemaDinamico(int num_ecuaciones, int num_icognitas);

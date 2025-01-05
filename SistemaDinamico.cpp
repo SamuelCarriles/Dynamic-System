@@ -19,21 +19,43 @@ SistemaDinamico::SistemaDinamico(int num_ecuaciones, int num_icognitas)
 } // Constructor Completado!!
 
 void SistemaDinamico::crear_matriz(double* fila,int index,string matriz){
-    if(matriz=="matriz-ampliada"){
-        for(int i=0;i<dimension_matriz_ampliada;i++){
-            matriz_ampliada[index][i]=fila[i];
-        }
-    } else if(matriz=="matriz-equivalente"){
-        for(int i=0;i<dimension_matriz_ampliada;i++){
-            matriz_ampliada[index][i]=fila[i];
-        } 
-    } else cout<<"\nERROR_202!\n";
+    try {
+        if(matriz=="matriz-ampliada"){
+            for(int i=0;i<dimension_matriz_ampliada;i++){
+                matriz_ampliada[index][i]=fila[i];
+            }
+        } else if(matriz=="matriz-equivalente"){
+            for(int i=0;i<dimension_matriz_ampliada;i++){
+                matriz_ampliada[index][i]=fila[i];
+            } 
+        } else throw 202;
+    } catch(int x) {
+        cout<<"ERROR_"<<x<<"!\n";
+    }
 } // M.Priv Completado!! 
 // Recibe el arreglo de la fila, la fila que es y a qué matriz pertenece.
 double* SistemaDinamico::extraer_coeficientes(string* cadena){
     //falta escribir este método
 }
-
+string SistemaDinamico::patron_validacion(){
+    string variablesPatron="(";
+    for(int i=0;i<cant_icognitas;i++){
+        variablesPatron+=variables[i];
+        if(i<cant_icognitas-1){
+            variablesPatron+="|";
+        }
+    }
+    variablesPatron+=")";
+    string validacionPatron=R"(^\s*([+-]?\s*\d*(\.\d+)?(/\s*\d+(\.\d+)?)?)"+variablesPatron+R"((/\s*\d+(\.\d+)?)?))"+R"(\s*([+-]?\s*\d*(\.\d+)?(/\s*\d+(\.\d+)?)?)"+variablesPatron+R"((/\s*\d+(\.\d+)?)?)*)"+R"(\s*=\s*([+-]?\s*\d*(\.\d+)?(/\s*\d+(\.\d+)?)?)+$)";
+    return validacionPatron;
+} // M.Priv Completado!!
+bool SistemaDinamico::validador_de_ecuaciones(const string& cadena){
+    regex patron(patron_validacion());
+    if(regex_match(cadena,patron)){
+        return true;
+    }
+    return false;
+} // M.Priv Completado!!
 
 void SistemaDinamico::receptor_variables() {
     char* var=new char[cant_icognitas];
@@ -107,7 +129,7 @@ void SistemaDinamico::receptor_variables() {
 void SistemaDinamico::receptor_ecuaciones() {
     bool error;
     string* cadena=new string[cant_ecuaciones];
-    cout<<"\nIngrese las "<<cant_ecuaciones<<" ecuaciones del sistema: \n";
+    cout<<"\nIngrese las "<<cant_ecuaciones<<" ecuaciones del sistema. \nTenga en cuenta que deben tener la forma \"<variables> = <término independiente>\": \n";
     cout<<"\n(Recuerde que debe usar las variables: ";
     for(int i=0;i<cant_icognitas;i++){
         cout<<variables[i]<<" ";
@@ -115,14 +137,20 @@ void SistemaDinamico::receptor_ecuaciones() {
     cout<<")"<<endl;
     for(int i=0;i<cant_ecuaciones;i++){
         do {
-            error=false;
-            cout<<"\nEcuación "<<i+1<<" => ";
-            getline(cin,cadena[i]);
-            if(cin.fail()){
-                cout<<"\nERROR_201! Ecuación no válida. Vuelva a intentarlo . . .\n";
+            try {
+                error=false;
+                cout<<"\nEcuación "<<i+1<<" => ";
+                getline(cin,cadena[i]);
+                if(cin.fail()){
+                    throw 201;
+                }
+                error=validador_de_ecuaciones(cadena[i])==false? true:false;
+            } catch(int x){
                 error=true;
-                cin.clear();
                 cadena[i]="";
+                cout<<"ERROR_"<<x<<"!\n Presione ENTER para volver a intentarlo . . .";
+                cin.clear();
+                cin.get();
             }
         } while(error==true);
     }
@@ -134,7 +162,7 @@ void SistemaDinamico::receptor_ecuaciones() {
     cout<<"\n¡Perfecto! Presione ENTER para continuar . . .";
     cin.get();
 
-} // M.Pub Completado!!
+} // falta crear los métodos"extraer_coeficientes" y "crear_matriz" para que tenga validez
 
 
 SistemaDinamico::~SistemaDinamico() {

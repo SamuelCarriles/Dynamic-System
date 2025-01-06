@@ -18,6 +18,7 @@ SistemaDinamico::SistemaDinamico(int num_ecuaciones, int num_icognitas)
     variables=new char[cant_icognitas];
 } // Constructor Completado!!
 
+ // Métodos privados
 void SistemaDinamico::crear_matriz(double* fila,int index,string matriz){
     try {
         if(matriz=="matriz-ampliada"){
@@ -46,17 +47,24 @@ string SistemaDinamico::patron_validacion(){
         }
     }
     variablesPatron+=")";
-    string validacionPatron=R"(^\s*([+-]?\s*\d*(\.\d+)?(/\s*\d+(\.\d+)?)?)"+variablesPatron+R"((/\s*\d+(\.\d+)?)?))"+R"(\s*([+-]?\s*\d*(\.\d+)?(/\s*\d+(\.\d+)?)?)"+variablesPatron+R"((/\s*\d+(\.\d+)?)?)*)"+R"(\s*=\s*([+-]?\s*\d*(\.\d+)?(/\s*\d+(\.\d+)?)?)+$)";
+    string validacionPatron=R"(^\s*((-?\s*\()?\s*(-?\s*\d*(\.\d+)?(\s*/\s*-?\s*\d+(\.\d+)?)?)\s*\)?\s*)"+variablesPatron+R"((\s*/\s*-?\s*\d+(\.\d+)?)?\s*\)?)(\s*(\+|-)(\s*\(\s*-?)(\s*\d*(\.\d+)?(\s*/\s*-?\s*\d+(\.\d+)?)?)\s*\)?\s*)"+variablesPatron+R"((\s*/\s*-?\s*\d+(\.\d+)?)?\s*\)?\s*)*\s*=\s*(-?\s*\()?\s*(-?\s*\d+(\.\d+)?(\s*/\s*-?\s*\d+(\.\d+)?)?)(\)?\s*)$)";
     return validacionPatron;
 } // M.Priv Completado!!
-bool SistemaDinamico::validador_de_ecuaciones(const string& cadena){
+bool SistemaDinamico::validador_de_ecuaciones(const string& ecuacion){
+    // Añadir un comprobador para saber si hay cantidad igual de paréntesis de abrir y cerrar, porque es error.
+    int parentAbierto=0,parentCerrado=0;
+    for(const auto& i : ecuacion){
+        if(i=="(") parentAbierto++;
+        else if(i==")") parentCerrado++;
+    }
     regex patron(patron_validacion());
-    if(regex_match(cadena,patron)){
+    if(regex_match(ecuacion,patron)&&parentAbierto==parentCerrado){
         return true;
     }
     return false;
 } // M.Priv Completado!!
 
+ // Métodos públicos
 void SistemaDinamico::receptor_variables() {
     char* var=new char[cant_icognitas];
     for(int i=0;i<cant_icognitas;i++){
@@ -87,7 +95,7 @@ void SistemaDinamico::receptor_variables() {
                 error=true;
                 cout<<"ERROR_"<<x<<"!\n Presione ENTER para volver a intentarlo . . .";
                 cin.clear();
-                cin.get();
+                cin.ignore(1000,'\n');
             }
         } while (error==true);
     }
@@ -117,7 +125,7 @@ void SistemaDinamico::receptor_variables() {
             error=true;
             cout<<"ERROR_"<<x<<"!\n Presione ENTER para volver a intentarlo . . .";
             cin.clear();
-            cin.get();
+            cin.ignore(1000,'\n');
         }
     } while (error==true);
     for(int i=0;i<cant_icognitas;i++){
@@ -142,15 +150,16 @@ void SistemaDinamico::receptor_ecuaciones() {
                 cout<<"\nEcuación "<<i+1<<" => ";
                 getline(cin,cadena[i]);
                 if(cin.fail()){
-                    throw 201;
+                    throw 202;
                 }
                 error=validador_de_ecuaciones(cadena[i])==false? true:false;
+                if(error==true) throw 201;
             } catch(int x){
                 error=true;
                 cadena[i]="";
                 cout<<"ERROR_"<<x<<"!\n Presione ENTER para volver a intentarlo . . .";
                 cin.clear();
-                cin.get();
+                cin.ignore(100,'\n');
             }
         } while(error==true);
     }

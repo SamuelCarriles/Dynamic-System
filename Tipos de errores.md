@@ -7,5 +7,6 @@ A continuación se encuentra la tabla de errores, dividida en tres secciones: gu
 |//|//|**ERROR_102**: un caracter irrepetible se encuentra repetido.|
 |*Errores grupo 2*|Cadena inválida|**ERROR_201**: cadena con elementos no válidos.|
 |//|//|**ERROR_202**: cadena no reconocida.|
+|//|//|**ERROR_203**: Cadena vacía.|
 
 

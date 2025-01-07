@@ -11,5 +11,6 @@ int main(){
     SistemaDinamico sistema(3,3);
     sistema.receptor_variables();
     sistema.receptor_ecuaciones();
+    sistema.mostrar_matriz();
     return 0;
 }

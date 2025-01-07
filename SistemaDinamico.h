@@ -13,8 +13,11 @@ class SistemaDinamico
     int cant_ecuaciones,cant_icognitas,dimension_matriz_ampliada;
     
     // Métodos privados
+    double de_string_a_numero(string numString);
     void crear_matriz(double* fila,int index,string matriz);
-    double* extraer_coeficientes(string* cadena);
+    double* extraer_coeficientes(string& cadena);
+    bool validador_de_ecuaciones(const string& ecuacion);
+    string patron_validacion();
 
     public:
     SistemaDinamico(int num_ecuaciones, int num_icognitas);

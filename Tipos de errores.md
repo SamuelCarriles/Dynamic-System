@@ -3,9 +3,10 @@ A continuación se encuentra la tabla de errores, dividida en tres secciones: gu
 
 |**Grupo del error**|**Explicación general**|**Tipo de error y explicación específica**|
 |:-----------------:|:---------------------:|:-----------------------------------------|
-|*Errores grupo 1*|Caracter inválido|**ERROR_101**: caracter de tipo inválido.|
+|*Errores grupo 1*|Caracter inválido|**ERROR_101**: caracter de tipo inválido o simplemente inválido en ese contexto.|
 |//|//|**ERROR_102**: un caracter irrepetible se encuentra repetido.|
 |*Errores grupo 2*|Cadena inválida|**ERROR_201**: cadena con elementos no válidos.|
 |//|//|**ERROR_202**: cadena no reconocida.|
+|//|//|**ERROR_203**: Cadena vacía.|
 
 

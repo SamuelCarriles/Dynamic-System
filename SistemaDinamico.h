@@ -18,6 +18,8 @@ class SistemaDinamico
     double* extraer_coeficientes(string& cadena);
     bool validador_de_ecuaciones(const string& ecuacion);
     string patron_validacion();
+    int clasificar_matriz();
+    void escalonar();
 
     public:
     SistemaDinamico(int num_ecuaciones, int num_icognitas);

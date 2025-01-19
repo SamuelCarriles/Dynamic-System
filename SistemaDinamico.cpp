@@ -142,7 +142,6 @@ string SistemaDinamico::patron_validacion(){
     return validacionPatron;
 } // M.Priv Completado!!
 bool SistemaDinamico::validador_de_ecuaciones(const string& ecuacion){
-    // Añadir un comprobador para saber si hay cantidad igual de paréntesis de abrir y cerrar, porque es error.
     int parentAbierto=0,parentCerrado=0;
     for(const auto& i : ecuacion){
         if(i=='(') parentAbierto++;
@@ -168,6 +167,7 @@ void SistemaDinamico::clasificar_matriz(){
         cout<<"\n\nLa matriz es compatible determinada.\n";
         cout<<"\n\nPresione ENTER para continuar . . .";
         cin.ignore(1000,'\n');
+        solucion_determinada();
     }
     else if((rango1==rango2)&&(cant_incognitas>cant_ecuaciones)) {
         cout<<"\n\nLa matriz es compatible indeterminada.\n";
@@ -175,7 +175,7 @@ void SistemaDinamico::clasificar_matriz(){
         cin.ignore(1000,'\n');
     }
     else if(rango1<rango2){
-        cout<<"\nLa matriz es incompatible, por lo tanto, el sistema no tiene solución.\n\n";
+        cout<<"\nLa matriz es incompatible, por lo tanto, el sistema no tiene solución.\n";
         cout<<"\n\nPresione ENTER para continuar . . .";
         cin.ignore(1000,'\n');
     }
@@ -189,7 +189,6 @@ void SistemaDinamico::escalonar(){
     int filaMayorPivote=0;
     for(int i=1;i<cant_ecuaciones;++i){
         if(abs(matriz_equivalente[i][0])>abs(matriz_equivalente[i-1][0])) filaMayorPivote=i;
-        else filaMayorPivote=i-1;
     }
     if(filaMayorPivote!=0&&(matriz_equivalente[0][0]!=matriz_equivalente[filaMayorPivote][0])){
         swap(matriz_equivalente[0],matriz_equivalente[filaMayorPivote]);
@@ -235,15 +234,42 @@ void SistemaDinamico::escalonar(){
     }
     cout << "\n¡Proceso de escalonamiento completado!\n";
 }
-/*void SistemaDinamico::solucion_determinada(){
+void SistemaDinamico::solucion_determinada(){
     double factores[2]={0,0};
-    for(int i=cant_incognitas-1;i>0;--i){
-        factores[0]=matriz_equivalente[i][i];
-        for(int j=cant_incognitas-1;i>0;--i){
-
+    int contador=0;
+    for(int i=cant_ecuaciones-1;i>0;--i){
+        contador=0;
+        for(int h=0;h<cant_incognitas;++h){
+            if(matriz_equivalente[i][h]==0) contador++;
         }
+        if(contador==cant_incognitas) continue;
+        factores[0]=matriz_equivalente[i][i];
+        for(int j=i-1;j>=0;--j){
+            if(matriz_equivalente[j][i]==0) continue;
+            factores[1]=matriz_equivalente[j][i];
+            for(int k=0;k<dimension_matriz_ampliada;++k){
+                matriz_equivalente[j][k]=(factores[1]*matriz_equivalente[i][k])-(factores[0]*matriz_equivalente[j][k]);
+            }
+            cout<<"\n\n("<<factores[1]<<"*Fila "<<i+1<<") - ("<<factores[0]<<"*Fila "<<j+1<<")\n\n";
+            mostrar_matriz();
+        }   
     }
-}*/
+
+    for(int i=0;i<cant_ecuaciones;++i){
+        double factor=matriz_equivalente[i][i];
+        for(int j=0;j<dimension_matriz_ampliada;++j){
+            if(matriz_equivalente[i][j]!=0) matriz_equivalente[i][j]/=factor;
+        }
+        cout<<"\n\nFila "<<i+1<<" / "<<factor<<endl<<endl;
+        mostrar_matriz();
+    }
+    cout<<"\n\nLos valores de las variables son: \n\n";
+    for(int i=0;i<cant_incognitas;++i){
+        if(matriz_equivalente[i][i]==0) break;
+        int index=i;
+        cout<<variables[index]<<" = "<<matriz_equivalente[i][cant_incognitas]<<endl<<endl;
+    }
+}
  // Métodos públicos
 
 void SistemaDinamico::receptor_variables() {
@@ -252,6 +278,7 @@ void SistemaDinamico::receptor_variables() {
         var[i]='\0';
     }
     bool error;
+    char sn;
     cout<<"\nIntroduzca las variables que se utilizarán: \n";
     for(int i=0;i<cant_incognitas;i++){
         do {
@@ -280,7 +307,7 @@ void SistemaDinamico::receptor_variables() {
         } while (error==true);
     }
     do {
-        char sn;
+        
         try {
             error=false;
             cout<<"\n¿Desea utilizar estas variables? [";
@@ -299,7 +326,6 @@ void SistemaDinamico::receptor_variables() {
                 system("cls");
             } else if(sn=='n'||sn=='N'){
                 cout<<"\nVale. Intente otra vez, por favor . . .\n";
-                receptor_variables();
             }
         } catch(int x){
             sn='\0';
@@ -309,9 +335,11 @@ void SistemaDinamico::receptor_variables() {
             cin.ignore(1000,'\n');
         }
     } while (error==true);
-    for(int i=0;i<cant_incognitas;i++){
-        variables[i]=var[i];
-    }
+    if(!(sn=='N'||sn=='n')){   
+        for(int i=0;i<cant_incognitas;i++){
+            variables[i]=var[i];
+        }
+    } else receptor_variables();
     delete[] var;
 
 } // M.Pub Completado!!
@@ -358,8 +386,12 @@ void SistemaDinamico::mostrar_matriz() {
     cout<<"\n\nMatriz actual: \n\n";
     for(int i=0;i<cant_ecuaciones;++i){
         for(int j=0;j<dimension_matriz_ampliada;++j){
-            if(j==cant_incognitas) cout<<setw(9)<<"|"<<setw(10)<<matriz_equivalente[i][j];
-            else cout<<setw(20)<<matriz_equivalente[i][j];
+            if(j==cant_incognitas) {
+                if(matriz_equivalente[i][j]==-0) cout<<setw(9)<<"|"<<setw(10)<<0;
+                else cout<<setw(9)<<"|"<<setw(10)<<matriz_equivalente[i][j];
+            } else if(matriz_equivalente[i][j]==-0){
+                cout<<setw(20)<<0;
+            } else cout<<setw(20)<<matriz_equivalente[i][j];
         }
         cout<<endl<<endl;
     }

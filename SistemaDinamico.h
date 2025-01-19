@@ -10,7 +10,7 @@ class SistemaDinamico
     double** matriz_ampliada;
     double** matriz_equivalente;
     char* variables;
-    int cant_ecuaciones,cant_icognitas,dimension_matriz_ampliada;
+    int cant_ecuaciones,cant_incognitas,dimension_matriz_ampliada;
     
     // Métodos privados
     double de_string_a_numero(string numString);
@@ -18,11 +18,13 @@ class SistemaDinamico
     double* extraer_coeficientes(string& cadena);
     bool validador_de_ecuaciones(const string& ecuacion);
     string patron_validacion();
-    int clasificar_matriz();
+    void clasificar_matriz();
     void escalonar();
+    void solucion_determinada();
+    void solucion_indeterminada();
 
     public:
-    SistemaDinamico(int num_ecuaciones, int num_icognitas);
+    SistemaDinamico(int num_ecuaciones, int num_incognitas);
     
     // Métodos públicos
     void receptor_variables();
@@ -32,5 +34,5 @@ class SistemaDinamico
 
     ~SistemaDinamico();
 };
-
+ 
 #endif

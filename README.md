@@ -12,5 +12,5 @@ Se busca desarrollar un programa que, en síntesis, haga lo siguiente:
 - [x] Implementar un método que utilice la librería **regex** para validar las ecuaciones, hallar cada coeficiente y cada variable y llevarlos a arreglos separados.
 - [x] Implementar un método que facilite la creación de dos matrices: la ampliada y la equivalente. La ampliada para guardar los coeficientes y términos independientes originales, y la equivalente para aplicarle los procedimientos necesarios para la resolución del sistema.
 - [x] Implementar un método para escalonar matrices e identificar su compatibilidad o no.
-- [ ] Implementar un método para hallar el conjunto solución del sistema, sin importar si es determinado o indeterminado. 
-- [ ] Crear el menú principal del programa.
+- [x] Implementar un método para hallar el conjunto solución del sistema si es determinado.
+- [x] Crear el menú principal del programa.

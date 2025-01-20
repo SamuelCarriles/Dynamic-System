@@ -14,6 +14,7 @@ class SistemaDinamico
     
     // Métodos privados
     double de_string_a_numero(string numString);
+    string de_numero_a_string(double num);
     void crear_matriz(double* fila,int index,string matriz);
     double* extraer_coeficientes(string& cadena);
     bool validador_de_ecuaciones(const string& ecuacion);
@@ -21,7 +22,6 @@ class SistemaDinamico
     void clasificar_matriz();
     void escalonar();
     void solucion_determinada();
-    void solucion_indeterminada();
 
     public:
     SistemaDinamico(int num_ecuaciones, int num_incognitas);

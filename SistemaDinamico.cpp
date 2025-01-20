@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <string>
 #include <regex>
 #include <cmath>
@@ -58,6 +59,11 @@ double SistemaDinamico::de_string_a_numero(string numString) {
     numerador = stod(num);
     return numerador;
 } // M.Priv Completado!!
+string SistemaDinamico::de_numero_a_string(double num){
+    ostringstream oss;
+    oss<<num;
+    return oss.str();
+}
 void SistemaDinamico::crear_matriz(double* fila,int index,string matriz){
     if(matriz=="matriz-ampliada"){
         for(int i=0;i<dimension_matriz_ampliada;i++){
@@ -170,7 +176,7 @@ void SistemaDinamico::clasificar_matriz(){
         solucion_determinada();
     }
     else if((rango1==rango2)&&(cant_incognitas>cant_ecuaciones)) {
-        cout<<"\n\nLa matriz es compatible indeterminada.\n";
+        cout<<"\n\nLa matriz es compatible indeterminada. Y lamentablemente no podemos\nproporcionar soluciones infinitas . . .\n";
         cout<<"\n\nPresione ENTER para continuar . . .";
         cin.ignore(1000,'\n');
     }
@@ -263,12 +269,13 @@ void SistemaDinamico::solucion_determinada(){
         cout<<"\n\nFila "<<i+1<<" / "<<factor<<endl<<endl;
         mostrar_matriz();
     }
-    cout<<"\n\nLos valores de las variables son: \n\n";
+    cout<<"\n\nEl conjunto solución es: {";
     for(int i=0;i<cant_incognitas;++i){
         if(matriz_equivalente[i][i]==0) break;
         int index=i;
-        cout<<variables[index]<<" = "<<matriz_equivalente[i][cant_incognitas]<<endl<<endl;
+        cout<<variables[index]<<" = "<<matriz_equivalente[i][cant_incognitas]<<", ";
     }
+    cout<<"}\n\n";
 }
  // Métodos públicos
 
@@ -322,7 +329,7 @@ void SistemaDinamico::receptor_variables() {
                 throw 101;
             } else if(sn=='S'||sn=='s'){
                 cout<<"\n¡Perfecto! Presione ENTER para continuar . . .";
-                cin.get();
+                cin.ignore(1000,'\n');
                 system("cls");
             } else if(sn=='n'||sn=='N'){
                 cout<<"\nVale. Intente otra vez, por favor . . .\n";
